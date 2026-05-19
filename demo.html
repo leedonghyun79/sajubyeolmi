@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사주팔자 운세</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --gold:#c9a96e;--gold-light:#e8d5b0;--dark-bg:#1a1510;--card-bg:#211d17;
+      --card-border:#3a3020;--text-main:#f0e6d3;--text-muted:#9a8a72;
+      --element-wood:#5a8a4a;--element-fire:#c84a2a;--element-earth:#b8922a;
+      --element-metal:#8a9aaa;--element-water:#3a6a9a;
+    }
+    body{background:var(--dark-bg);color:var(--text-main);font-family:'Noto Sans KR',sans-serif;min-height:100vh}
+    .app{max-width:680px;margin:0 auto;padding:2rem 1rem}
+    .header{text-align:center;margin-bottom:2.5rem}
+    .header-symbol{font-size:2.5rem;margin-bottom:.5rem;color:var(--gold)}
+    .header h1{font-family:'Noto Serif KR',serif;font-size:1.6rem;font-weight:700;color:var(--gold);letter-spacing:.1em}
+    .header p{font-size:.8rem;color:var(--text-muted);margin-top:.4rem;letter-spacing:.05em}
+    .input-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+    .section-title{font-size:.7rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+    .section-title::after{content:'';flex:1;height:1px;background:var(--card-border)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group.full{grid-column:1/-1}
+    .form-group label{font-size:.75rem;color:var(--text-muted);letter-spacing:.05em}
+    .form-group input,.form-group select{background:#2a2520;border:1px solid var(--card-border);border-radius:6px;padding:10px 12px;color:var(--text-main);font-size:.85rem;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s}
+    .form-group input:focus,.form-group select:focus{border-color:var(--gold)}
+    .form-group select option{background:#2a2520}
+    .btn-main{width:100%;padding:14px;background:linear-gradient(135deg,#c9a96e,#a07840);border:none;border-radius:8px;color:#1a1510;font-size:.9rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;margin-top:1rem;letter-spacing:.05em;transition:opacity .2s}
+    .btn-main:hover{opacity:.9}
+    .btn-main:disabled{opacity:.5;cursor:not-allowed}
+    .result-section{display:none}
+    .pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
+    .pillar-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1rem .75rem;text-align:center}
+    .pillar-label{font-size:.65rem;color:var(--text-muted);letter-spacing:.1em;margin-bottom:.5rem}
+    .pillar-heavenly{font-family:'Noto Serif KR',serif;font-size:1.6rem;font-weight:700;line-height:1}
+    .pillar-earthly{font-family:'Noto Serif KR',serif;font-size:1.4rem;color:var(--text-muted);margin-top:.3rem}
+    .elements-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+    .element-bars{display:flex;flex-direction:column;gap:8px;margin-top:.75rem}
+    .element-row{display:flex;align-items:center;gap:10px}
+    .element-name{font-size:.75rem;width:32px;color:var(--text-muted)}
+    .element-bar-wrap{flex:1;height:6px;background:#2a2520;border-radius:3px;overflow:hidden}
+    .element-bar{height:100%;border-radius:3px;transition:width .6s ease}
+    .element-count{font-size:.7rem;color:var(--text-muted);width:20px;text-align:right}
+    .ai-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+    .ai-content{font-size:.85rem;line-height:1.9;color:var(--text-main);white-space:pre-wrap}
+    .loading-dots{display:flex;gap:6px;justify-content:center;padding:2rem}
+    .loading-dots span{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:dot .8s infinite}
+    .loading-dots span:nth-child(2){animation-delay:.15s}
+    .loading-dots span:nth-child(3){animation-delay:.3s}
+    @keyframes dot{0%,80%,100%{transform:scale(.4);opacity:.3}40%{transform:scale(1);opacity:1}}
+    .fortune-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+    .tab-btn{padding:7px 14px;background:#2a2520;border:1px solid var(--card-border);border-radius:20px;color:var(--text-muted);font-size:.75rem;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s}
+    .tab-btn.active{background:var(--gold);border-color:var(--gold);color:#1a1510;font-weight:700}
+    .luck-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:.75rem}
+    .luck-item{background:#2a2520;border-radius:8px;padding:.6rem .4rem;text-align:center}
+    .luck-age{font-size:.6rem;color:var(--text-muted);margin-bottom:3px}
+    .luck-stem{font-family:'Noto Serif KR',serif;font-size:1rem}
+    .luck-branch{font-family:'Noto Serif KR',serif;font-size:.9rem;color:var(--text-muted)}
+    .ten-gods-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:.75rem}
+    .god-item{background:#2a2520;border-radius:8px;padding:.6rem;text-align:center}
+    .god-name{font-size:.75rem;color:var(--gold);margin-bottom:3px}
+    .god-desc{font-size:.6rem;color:var(--text-muted);line-height:1.4}
+    .disclaimer{font-size:.65rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;line-height:1.6;padding:0 1rem}
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="header-symbol">☯</div>
+    <h1>사주팔자 운세</h1>
+    <p>명리학 기반 · AI 해석</p>
+  </div>
+
+  <div class="input-card">
+    <div class="section-title">생년월일시 입력</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>생년 (양력)</label>
+        <input type="number" id="year" placeholder="예: 1990" min="1900" max="2025" />
+      </div>
+      <div class="form-group">
+        <label>생월</label>
+        <select id="month">
+          <option value="">월 선택</option>
+          <option value="1">1월</option><option value="2">2월</option>
+          <option value="3">3월</option><option value="4">4월</option>
+          <option value="5">5월</option><option value="6">6월</option>
+          <option value="7">7월</option><option value="8">8월</option>
+          <option value="9">9월</option><option value="10">10월</option>
+          <option value="11">11월</option><option value="12">12월</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>생일</label>
+        <input type="number" id="day" placeholder="예: 15" min="1" max="31" />
+      </div>
+      <div class="form-group">
+        <label>생시</label>
+        <select id="hour">
+          <option value="0">자시 (23:00-01:00)</option>
+          <option value="2">축시 (01:00-03:00)</option>
+          <option value="4">인시 (03:00-05:00)</option>
+          <option value="6">묘시 (05:00-07:00)</option>
+          <option value="8">진시 (07:00-09:00)</option>
+          <option value="10">사시 (09:00-11:00)</option>
+          <option value="12">오시 (11:00-13:00)</option>
+          <option value="14">미시 (13:00-15:00)</option>
+          <option value="16">신시 (15:00-17:00)</option>
+          <option value="18">유시 (17:00-19:00)</option>
+          <option value="20">술시 (19:00-21:00)</option>
+          <option value="22">해시 (21:00-23:00)</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>성별</label>
+        <select id="gender">
+          <option value="male">남성</option>
+          <option value="female">여성</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-main" id="calcBtn" onclick="calculate()">✦ 사주팔자 보기</button>
+  </div>
+
+  <div class="result-section" id="results">
+    <div class="elements-card">
+      <div class="section-title">사주팔자 (四柱八字)</div>
+      <div class="pillars-grid" id="pillarsGrid"></div>
+    </div>
+
+    <div class="elements-card">
+      <div class="section-title">오행 분포</div>
+      <div class="element-bars" id="elementBars"></div>
+    </div>
+
+    <div class="elements-card">
+      <div class="section-title">십신 (十神)</div>
+      <div class="ten-gods-grid" id="tenGodsGrid"></div>
+    </div>
+
+    <div class="elements-card">
+      <div class="section-title">대운 흐름</div>
+      <div class="luck-grid" id="luckGrid"></div>
+    </div>
+
+    <div class="ai-card">
+      <div class="section-title">AI 명리 해석</div>
+      <div class="fortune-tabs">
+        <button class="tab-btn active" onclick="loadFortune('total',this)">종합운</button>
+        <button class="tab-btn" onclick="loadFortune('love',this)">애정운</button>
+        <button class="tab-btn" onclick="loadFortune('career',this)">직업운</button>
+        <button class="tab-btn" onclick="loadFortune('money',this)">재물운</button>
+        <button class="tab-btn" onclick="loadFortune('health',this)">건강운</button>
+      </div>
+      <div id="aiContent"></div>
+    </div>
+
+    <div class="disclaimer">
+      본 앱은 전통 명리학을 기반으로 AI가 해석한 결과입니다.<br>
+      참고용으로만 활용하시고, 중요한 결정은 전문가와 상담하세요.
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+// 명리학 기본 데이터
+// ─────────────────────────────────────────
+const STEMS   = ['甲갑','乙을','丙병','丁정','戊무','己기','庚경','辛신','壬임','癸계'];
+const BRANCHES = ['子자','丑축','寅인','卯묘','辰진','巳사','午오','未미','申신','酉유','戌술','亥해'];
+const STEM_ELEMENT   = ['목','목','화','화','토','토','금','금','수','수'];
+const BRANCH_ELEMENT = ['수','토','목','목','토','화','화','토','금','금','토','수'];
+const STEM_YIN       = [false,true,false,true,false,true,false,true,false,true];
+
+// 각 월의 절입일 (간략 근사값 — 실서비스는 정밀 만세력 라이브러리 권장)
+const SOLAR_TERMS = [
+  [6,4],[4,19],[6,6],[5,21],[6,6],[6,22],[7,8],[8,23],[9,9],[8,24],[7,8],[7,22]
+];
+
+let sajuData    = null;
+let fortuneCache = {};
+
+// ─────────────────────────────────────────
+// 사주 계산 함수
+// ─────────────────────────────────────────
+
+/** 년주 계산 */
+function getStemBranch(year) {
+  const y = year - 4;
+  return [STEMS[((y % 10) + 10) % 10], BRANCHES[((y % 12) + 12) % 12]];
+}
+
+/** 월주 계산 (절기 기준 보정) */
+function getMonthStemBranch(year, month, day) {
+  const solarTermDay  = SOLAR_TERMS[month - 1];
+  const adjustedMonth = day < solarTermDay[1] ? month - 1 : month;
+  const m             = ((adjustedMonth - 1) + 12) % 12;
+  const yearStemIdx   = ((year - 4) % 10 + 10) % 10;
+  const stemOffset    = (yearStemIdx % 5) * 2;
+  const stemIdx       = (stemOffset + m) % 10;
+  return [STEMS[stemIdx], BRANCHES[m]];
+}
+
+/** 일주 계산 (율리우스 적일 활용) */
+function getDayStemBranch(year, month, day) {
+  const a  = Math.floor((14 - month) / 12);
+  const y  = year - a;
+  const m  = month + 12 * a - 2;
+  const jd = day + Math.floor((153 * m + 2) / 5) + 365 * y
+           + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+  return [STEMS[((jd % 10) + 10) % 10], BRANCHES[((jd % 12) + 12) % 12]];
+}
+
+/** 시주 계산 */
+function getHourStemBranch(hour, dayStemIdx) {
+  const branchIdx = Math.floor(((hour + 1) % 24) / 2);
+  const stemBase  = (dayStemIdx % 5) * 2;
+  return [STEMS[(stemBase + branchIdx) % 10], BRANCHES[branchIdx]];
+}
+
+/** 대운 계산 (성별·년간 음양 기준) */
+function getDaYun(year, month, day, gender, yearStemIdx) {
+  const isMaleYang = gender === 'male'   && !STEM_YIN[yearStemIdx];
+  const isFemalYin = gender === 'female' &&  STEM_YIN[yearStemIdx];
+  const forward    = isMaleYang || isFemalYin;
+  const results    = [];
+  const startAge   = 3 + (day % 7);
+
+  for (let i = 0; i < 10; i++) {
+    const monthBranch = ((month - 1) + 12) % 12;
+    const offset      = forward ? i + 1 : -(i + 1);
+    const stemIdx     = (((month - 1) + offset * 2 % 10 + 100) % 10);
+    const branchIdx   = (((monthBranch + offset) % 12 + 12) % 12);
+    results.push({
+      age:    startAge + i * 10,
+      stem:   STEMS[(stemIdx + 10) % 10],
+      branch: BRANCHES[(branchIdx + 12) % 12]
+    });
+  }
+  return results;
+}
+
+/** 십신 계산 */
+function getTenGod(dayStemIdx, targetStemIdx) {
+  const diff  = ((targetStemIdx - dayStemIdx) + 10) % 10;
+  const names = ['비견','겁재','식신','상관','편재','정재','편관','정관','편인','정인'];
+  const descs = ['형제·동료','경쟁·활동','재능표현','창의·표현','편재수입','안정재물','권력도전','명예직위','편모지혜','정모학문'];
+  return { name: names[diff], desc: descs[diff] };
+}
+
+// ─────────────────────────────────────────
+// UI 유틸
+// ─────────────────────────────────────────
+function getElementColor(el) {
+  return { 목:'#5a8a4a', 화:'#c84a2a', 토:'#b8922a', 금:'#8a9aaa', 수:'#3a6a9a' }[el] || '#888';
+}
+
+// ─────────────────────────────────────────
+// 메인 계산 진입점
+// ─────────────────────────────────────────
+function calculate() {
+  const year   = parseInt(document.getElementById('year').value);
+  const month  = parseInt(document.getElementById('month').value);
+  const day    = parseInt(document.getElementById('day').value);
+  const hour   = parseInt(document.getElementById('hour').value);
+  const gender = document.getElementById('gender').value;
+
+  if (!year || !month || !day || year < 1900 || year > 2025) {
+    alert('올바른 생년월일을 입력해주세요.');
+    return;
+  }
+
+  const [yStem, yBranch] = getStemBranch(year);
+  const [mStem, mBranch] = getMonthStemBranch(year, month, day);
+  const [dStem, dBranch] = getDayStemBranch(year, month, day);
+  const dayStemIdx       = STEMS.indexOf(dStem);
+  const [hStem, hBranch] = getHourStemBranch(hour, dayStemIdx);
+  const yearStemIdx      = STEMS.indexOf(yStem);
+
+  sajuData = {
+    year, month, day, hour, gender,
+    pillars: [
+      { label:'년주', stem: yStem, branch: yBranch },
+      { label:'월주', stem: mStem, branch: mBranch },
+      { label:'일주', stem: dStem, branch: dBranch },
+      { label:'시주', stem: hStem, branch: hBranch },
+    ],
+    daYun:       getDaYun(year, month, day, gender, yearStemIdx),
+    dayStemIdx
+  };
+
+  // 오행 집계
+  const elements = { 목:0, 화:0, 토:0, 금:0, 수:0 };
+  sajuData.pillars.forEach(p => {
+    const si = STEMS.indexOf(p.stem);
+    const bi = BRANCHES.indexOf(p.branch);
+    if (si >= 0) elements[STEM_ELEMENT[si]]++;
+    if (bi >= 0) elements[BRANCH_ELEMENT[bi]]++;
+  });
+  sajuData.elements = elements;
+
+  renderPillars();
+  renderElements();
+  renderTenGods();
+  renderDaYun();
+
+  fortuneCache = {};
+  loadFortune('total', document.querySelector('.tab-btn.active'));
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ─────────────────────────────────────────
+// 렌더 함수들
+// ─────────────────────────────────────────
+function renderPillars() {
+  document.getElementById('pillarsGrid').innerHTML = sajuData.pillars.map(p => {
+    const si = STEMS.indexOf(p.stem);
+    const bi = BRANCHES.indexOf(p.branch);
+    const sc = getElementColor(STEM_ELEMENT[si] || '');
+    const bc = getElementColor(BRANCH_ELEMENT[bi] || '');
+    return `<div class="pillar-card">
+      <div class="pillar-label">${p.label}</div>
+      <div class="pillar-heavenly" style="color:${sc}">
+        ${p.stem[0]}<span style="font-size:.75rem;color:var(--text-muted)">${p.stem.slice(1)}</span>
+      </div>
+      <div class="pillar-earthly" style="color:${bc}">
+        ${p.branch[0]}<span style="font-size:.65rem">${p.branch.slice(1)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderElements() {
+  const el    = sajuData.elements;
+  const total = Object.values(el).reduce((a,b) => a+b, 0);
+  document.getElementById('elementBars').innerHTML = ['목','화','토','금','수'].map(e => {
+    const pct = total > 0 ? Math.round((el[e] / total) * 100) : 0;
+    return `<div class="element-row">
+      <div class="element-name">${e}</div>
+      <div class="element-bar-wrap">
+        <div class="element-bar" style="width:${pct}%;background:${getElementColor(e)}"></div>
+      </div>
+      <div class="element-count">${el[e]}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTenGods() {
+  document.getElementById('tenGodsGrid').innerHTML = sajuData.pillars.map(p => {
+    const si = STEMS.indexOf(p.stem);
+    const tg = si >= 0 ? getTenGod(sajuData.dayStemIdx, si) : { name:'-', desc:'' };
+    return `<div class="god-item">
+      <div class="god-name">${p.label} · ${tg.name}</div>
+      <div class="god-desc">${tg.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderDaYun() {
+  document.getElementById('luckGrid').innerHTML = sajuData.daYun.slice(0, 10).map(d =>
+    `<div class="luck-item">
+      <div class="luck-age">${d.age}세</div>
+      <div class="luck-stem">${d.stem[0]}</div>
+      <div class="luck-branch">${d.branch[0]}</div>
+    </div>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────
+// Claude API 호출 — AI 운세 해석
+// ─────────────────────────────────────────
+async function loadFortune(type, el) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+
+  // 캐시 히트
+  if (fortuneCache[type]) {
+    document.getElementById('aiContent').innerHTML =
+      `<div class="ai-content">${fortuneCache[type]}</div>`;
+    return;
+  }
+
+  document.getElementById('aiContent').innerHTML =
+    `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+  const typeLabel = {
+    total:'종합운세', love:'애정운', career:'직업·진로운', money:'재물운', health:'건강운'
+  }[type];
+
+  const p  = sajuData.pillars;
+  const e2 = sajuData.elements;
+
+  const prompt = `당신은 전통 명리학 전문가입니다. 아래 사주팔자를 분석하여 ${typeLabel}을 해석해주세요.
+
+사주팔자:
+- 년주: ${p[0].stem} ${p[0].branch}
+- 월주: ${p[1].stem} ${p[1].branch}
+- 일주: ${p[2].stem} ${p[2].branch} (일간이 자신을 나타냄)
+- 시주: ${p[3].stem} ${p[3].branch}
+
+오행 분포: 목${e2.목}개, 화${e2.화}개, 토${e2.토}개, 금${e2.금}개, 수${e2.수}개
+성별: ${sajuData.gender === 'male' ? '남성' : '여성'}
+생년: ${sajuData.year}년 ${sajuData.month}월 ${sajuData.day}일
+
+${typeLabel}을 다음 형식으로 해석해주세요:
+1. 일간(${p[2].stem})의 특성과 기질 (2-3문장)
+2. ${typeLabel} 주요 특징 (3-4문장)
+3. 강점과 주의사항 (각 2가지)
+4. 올해(2025년) 운세 흐름 (2-3문장)
+
+전통 명리학 용어를 자연스럽게 섞어 전문적이면서도 이해하기 쉽게 서술하세요. 500자 내외로 작성하세요.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model:      'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages:   [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '해석을 불러오지 못했습니다.';
+    fortuneCache[type] = text;
+    document.getElementById('aiContent').innerHTML =
+      `<div class="ai-content">${text}</div>`;
+  } catch (err) {
+    document.getElementById('aiContent').innerHTML =
+      `<div class="ai-content" style="color:var(--text-muted)">AI 해석 연결에 실패했습니다.\n잠시 후 다시 시도해주세요.</div>`;
+  }
+}
+</script>
+
+</body>
+</html>
