@@ -1,16 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap');
-
 * {
-  @apply box-border;
+  box-sizing: border-box;
 }
 
 body {
-  @apply bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900;
-  @apply text-amber-100;
+  background: #0f172a;
+  color: #fef3c7;
   font-family: 'Noto Sans KR', sans-serif;
 }
 

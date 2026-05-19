@@ -4,7 +4,29 @@
       "Bash(git init *)",
       "Bash(git config *)",
       "Bash(git add *)",
-      "Bash(git commit -m 'docs: 사주팔자 운세 플랫폼 설계 문서 작성 *)"
+      "Bash(git commit -m 'docs: 사주팔자 운세 플랫폼 설계 문서 작성 *)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --no-git --no-src-dir)",
+      "Bash(mv demo.html ../demo.html.bak)",
+      "Bash(npm install *)",
+      "Bash(git commit -m ' *)",
+      "Bash(npm list *)",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\작업실\\\\study\\\\projects\\\\saju\" -File | Where-Object { $_.Name -match \"\\(package\\\\.json|next\\\\.config\\\\.ts|tsconfig\\\\.json|tailwind\\\\.config\\\\.ts|\\\\.env\\\\.local|\\\\.gitignore\\)\" } | Select-Object Name)",
+      "Bash(git commit *)",
+      "Bash(npm run *)",
+      "Bash(curl -X POST http://localhost:3002/api/calculate -H \"Content-Type: application/json\" -d '{\"year\":1990,\"month\":1,\"day\":15,\"hour\":0,\"gender\":\"male\"}')",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.Id -Force })",
+      "Bash(curl -X POST http://localhost:3000/api/calculate -H \"Content-Type: application/json\" -d '{\"year\":1990,\"month\":1,\"day\":15,\"hour\":0,\"gender\":\"male\"}')",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force -Confirm:$false)",
+      "Bash(mv calculate.ts calculate/route.ts)",
+      "Bash(mkdir -p calculate)",
+      "Bash(mv \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\calculate.ts\" \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\calculate\\\\route.ts\")",
+      "Bash(mv analyze.ts analyze/route.ts)",
+      "Bash(mkdir -p analyze)",
+      "Bash(mv \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\analyze.ts\" \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\analyze\\\\route.ts\")"
+    ],
+    "additionalDirectories": [
+      "d:\\작업실\\study\\projects"
     ]
   }
 }
