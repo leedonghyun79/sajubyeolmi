@@ -5,7 +5,7 @@ import { SajuResult } from '@/types/saju';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { saju, type } = body;
+    const { saju, type } = body as { saju: SajuResult; type: string };
 
     if (!saju || !type) {
       return NextResponse.json(
@@ -14,13 +14,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const typeLabel = {
+    const typeMap: Record<string, string> = {
       total: '종합운세',
       love: '애정운',
       career: '직업·진로운',
       money: '재물운',
       health: '건강운',
-    }[type] || '종합운세';
+    };
+    const typeLabel = typeMap[type] || '종합운세';
 
     const p = saju.pillars;
     const e = saju.elements;
