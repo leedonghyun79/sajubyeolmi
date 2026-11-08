@@ -23,7 +23,11 @@
       "Bash(mv \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\calculate.ts\" \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\calculate\\\\route.ts\")",
       "Bash(mv analyze.ts analyze/route.ts)",
       "Bash(mkdir -p analyze)",
-      "Bash(mv \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\analyze.ts\" \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\analyze\\\\route.ts\")"
+      "Bash(mv \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\analyze.ts\" \"d:\\\\작업실\\\\study\\\\projects\\\\saju\\\\app\\\\api\\\\analyze\\\\route.ts\")",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(curl -s -X POST http://localhost:3000/api/calculate -H \"Content-Type: application/json\" -d '{\"year\":1990,\"month\":1,\"day\":15,\"hour\":0,\"gender\":\"male\"}')",
+      "Bash(npx tsc *)",
+      "Bash(npm test *)"
     ],
     "additionalDirectories": [
       "d:\\작업실\\study\\projects"
